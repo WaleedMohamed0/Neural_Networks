@@ -8,6 +8,10 @@ Feature1 = "bill_depth_mm"
 Feature2 = "bill_length_mm"
 Special1 = "Chinstrap"
 Special2 = "Adelie"
+LearningRate = 0.01
+Epochs = 100
+UseBias = False
+
 def startGUI():
     def pickSpecies(e):
         speciesList2 = []
@@ -38,13 +42,19 @@ def startGUI():
             if x != combo2.get():
                 featureList1.append(x)
         global Feature1 
-        Feature1 = species1.get()
+        Feature1 = combo.get()
         global Feature2
-        Feature2 = species2.get() 
+        Feature2 = combo2.get() 
         combo.config(values=featureList1)
         combo2.config(values=featureList2)
         
-
+    def callback():
+        global LearningRate 
+        LearningRate = learningRate.get()
+        global Epochs
+        Epochs = epochs.get()
+        global UseBias
+        UseBias = useBais.get()
 
     master = Tk()
     master.title("Task 1")
@@ -89,15 +99,30 @@ def startGUI():
 
     combo2.bind("<<ComboboxSelected>>",pickFeature)
 
+    # Text box for learning rate
+    learningRateLabel = Label(master, text="Learning Rate",font=("Helvetica", 16, "bold"))
+    learningRateLabel.pack(pady = 5)
+    learningRate = Entry(master)
+    learningRate.pack(pady=5)
+    
+    # Text Box for Epochs
+    epochsLabel = Label(master, text="Epochs",font=("Helvetica", 16, "bold"))
+    epochsLabel.pack(pady = 5)
+    epochs = Entry(master)
+    epochs.pack(pady=5)
+    
     useBais = StringVar()
     ttk.Checkbutton(master,text="Use Bias", variable=useBais).pack()
 
     # Create "Run" with white text color button
     # if clicked, return the values and quit the GUI
     
-    runButton = Button(master, text="Run", command=lambda: master.destroy())
+    runButton = Button(master, text="Run", command=lambda: { 
+        callback(),
+        master.destroy()
+                                                            })
 
     runButton.pack(pady = 5)
      
     mainloop()
-    return Feature1, Feature2, Special1, Special2
+    return Feature1, Feature2, Special1, Special2, LearningRate, Epochs, UseBias
