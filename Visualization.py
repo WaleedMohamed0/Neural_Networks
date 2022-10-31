@@ -1,23 +1,17 @@
 import matplotlib.pyplot as plt
-import math
-from GUI import Feature1
 from preprocessing import *
 
 def visualize(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2, bias, feature1, feature2, species1, species2):
-    feature1_1 = [float(feature1_1[x]) for x in range(len(feature1_1))]
-    feature1_2 = [float(feature1_2[x]) for x in range(len(feature1_1))]
-    feature2_1 = [float(feature2_1[x]) for x in range(len(feature1_1))]
-    feature2_2 = [float(feature2_2[x]) for x in range(len(feature1_1))]
     # Plot the decision boundary
-    print(species1, species2)
     plt.scatter(feature1_1, feature1_2, color='red', label=species1)
     plt.scatter(feature2_1, feature2_2, color='blue', label=species2)
     plt.xlabel(feature1)
     plt.ylabel(feature2)
     if weight1 != 0 and weight2 != 0:
-        x = [0,1]
+        minX = [min(feature1_1), min(feature2_1)]
+        maxX = [max(feature1_1), max(feature2_1)]
+        x = [min(minX),max(maxX)]
         y= [(-weight1 * i - bias) / weight2 for i in x]
-        print(y)
         plt.plot(x, y, color='black', label='Decision Boundary')
         
     plt.legend([species1, species2])
@@ -65,5 +59,3 @@ def preVis():
             GentooFeature2 = []
             ChinstrapFeature1 = []
             ChinstrapFeature2 = []
-        
-        
