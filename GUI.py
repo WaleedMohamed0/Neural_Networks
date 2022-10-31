@@ -1,8 +1,5 @@
-from msilib.schema import Feature
 from tkinter import ttk
 from tkinter import *
-from tokenize import Special
-from turtle import exitonclick
 from preprocessing import *
 
 Feature1 = "bill_depth_mm"
