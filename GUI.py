@@ -2,6 +2,7 @@ from msilib.schema import Feature
 from tkinter import ttk
 from tkinter import *
 from tokenize import Special
+from turtle import exitonclick
 from preprocessing import *
 
 Feature1 = "bill_depth_mm"
@@ -55,10 +56,12 @@ def startGUI():
         Epochs = epochs.get()
         global UseBias
         UseBias = useBais.get()
-
+        
+    
+    
     master = Tk()
     master.title("Task 1")
-    master.geometry("500x500")
+    master.geometry("400x530")
 
     # Create Bold "Species" label
     speciesLabel = Label(master, text="Species", font=("Helvetica", 16, "bold"))
@@ -121,8 +124,10 @@ def startGUI():
         callback(),
         master.destroy()
                                                             })
-
     runButton.pack(pady = 5)
-     
+    
+    #close the application if the user clicks the close button
+    master.protocol("WM_DELETE_WINDOW", exit)
+    
     mainloop()
     return Feature1, Feature2, Special1, Special2, LearningRate, Epochs, UseBias

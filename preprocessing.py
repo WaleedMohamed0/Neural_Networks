@@ -24,6 +24,7 @@ data['gender'] = data['gender'].replace({"male": 1, "female": 0})
 
 
 
+
 # # visualize the data and the decision boundary
 # def visualize_data(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2):
 #     finalData = list(zip(label1,feature1_1, feature1_2,label1)) + list(zip(label1,feature2_1, feature2_2,label2))

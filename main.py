@@ -11,6 +11,7 @@ from Visualization import *
 # feature1_2 = data['bill_depth_mm'][:30]
 # feature2_1 =  data['bill_length_mm'][50:80]
 # feature2_2 = data['bill_depth_mm'][50:80]
+preVis()
 combo, combo2, species1,species2,learningRate,epochs,useBias = startGUI()
 feature1_1 = []
 feature1_2 = []
