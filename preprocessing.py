@@ -16,8 +16,6 @@ data = data.astype(str)
 # replace nan in gender column with a random gender
 data['gender'] = data['gender'].replace('nan', random.choice(gender))
 
-# print the data frame
-pd.set_option('display.max_rows', None)
 
 data['gender'] = data['gender'].replace({"male": 1, "female": 0})
 

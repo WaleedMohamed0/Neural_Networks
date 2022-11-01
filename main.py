@@ -71,4 +71,4 @@ print("Test Accuracy: Acc: ",test_model(weight1, weight2, test1_1, test1_2, test
 # visualize the decision boundary
 visualize(test1_1, test1_2, test2_1, test2_2, weight1, weight2, bias,feature1,feature2, species1, species2)
 
-
+confusion_matrix(weight1, weight2, test1_1, test1_2, test2_1, test2_2,species1,species2, label1, label2, bias)

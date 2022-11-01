@@ -74,8 +74,8 @@ def startGUI():
         return entry
     
     speciesList = ["Adelie", "Chinstrap", "Gentoo"]
-    speciesList1 = ["Chinstrap", "Gentoo"]
     featureList = ["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "gender","body_mass_g"]
+    speciesList1 = ["Chinstrap", "Gentoo"]
     featureList1 = ["bill_depth_mm", "flipper_length_mm", "gender","body_mass_g"]
     
     master = Tk()
@@ -108,4 +108,5 @@ def startGUI():
     master.protocol("WM_DELETE_WINDOW", exit)
     
     mainloop()
+    
     return Feature1, Feature2, Special1, Special2, LearningRate, Epochs, UseBias

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from preprocessing import *
+import numpy as np
 
 def visualize(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2, bias, feature1, feature2, species1, species2):
     # Plot the decision boundary
@@ -59,3 +60,34 @@ def preVis():
             GentooFeature2 = []
             ChinstrapFeature1 = []
             ChinstrapFeature2 = []
+
+def confusion_matrix(weight1, weight2, feature1_1, feature1_2, feature2_1, feature2_2,species1, species2, bias):
+    TP = 0
+    FP = 0
+    TN = 0
+    FN = 0
+    for i in range(len(feature1_1)):
+        x = feature1_1[i] * weight1 + feature1_2[i] * weight2 + bias
+        if x > 0:
+            TP += 1
+        else:
+            FN += 1
+    for i in range(len(feature2_1)):
+        x = feature2_1[i] * weight1 + feature2_2[i] * weight2 + bias
+        if x > 0:
+            FP += 1
+        else:
+            TN += 1
+    # display the confusion matrix using matplotlib
+    fig, ax = plt.subplots()
+    ax.matshow(np.array([[TP, FP], [FN, TN]]), cmap=plt.cm.Blues, alpha=0.3)
+    for i in range(2):
+        for j in range(2):
+            c = np.array([[TP, FP], [FN, TN]])[i, j]
+            ax.text(x=j, y=i, s=c, va='center', ha='center')
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.xticks([0, 1], [species1, species2])
+    plt.yticks([0, 1], [species1, species2])
+    plt.show()
+    
