@@ -25,3 +25,4 @@ for i in data.columns:
         continue
     data[i] = [float(j) for j in data[i]]
     data[i] = ((data[i] - data[i].min()) / (data[i].max() - data[i].min()))
+

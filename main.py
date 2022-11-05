@@ -67,8 +67,9 @@ print("Train Accuracy: ", test_model(weight1, weight2, feature1_1, feature1_2, f
 visualize(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2, bias,feature1,feature2, species1, species2)
 
 # test the trained model
-print("Test Accuracy: Acc: ",test_model(weight1, weight2, test1_1, test1_2, test2_1, test2_2, label1, label2, bias) * 100, "%")
+print("Test Accuracy: ",test_model(weight1, weight2, test1_1, test1_2, test2_1, test2_2, label1, label2, bias) * 100, "%")
 # visualize the decision boundary
 visualize(test1_1, test1_2, test2_1, test2_2, weight1, weight2, bias,feature1,feature2, species1, species2)
 
-confusion_matrix(weight1, weight2, test1_1, test1_2, test2_1, test2_2,species1,species2, label1, label2, bias)
+confusion_matrix(weight1, weight2, test1_1, test1_2, test2_1, test2_2,species1,species2, bias)
+

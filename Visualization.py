@@ -16,7 +16,7 @@ def visualize(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2, 
         plt.plot(x, y, color='black', label='Decision Boundary')
         
     plt.legend([species1, species2])
-
+    plt.savefig('decision_boundary.png')
     plt.show()
 
 # Define a Visualization function to visualize all the data points before train
@@ -52,7 +52,6 @@ def preVis():
             plt.legend(['Adelie', 'Gentoo', 'Chinstrap'])
             plt.xlabel(featureList[i])
             plt.ylabel(featureList[j])
-            plt.show()
             # clear the data for next plot
             AdelieFeature1 = []
             AdelieFeature2 = []
@@ -78,7 +77,6 @@ def confusion_matrix(weight1, weight2, feature1_1, feature1_2, feature2_1, featu
             FP += 1
         else:
             TN += 1
-    # display the confusion matrix using matplotlib
     fig, ax = plt.subplots()
     ax.matshow(np.array([[TP, FP], [FN, TN]]), cmap=plt.cm.Blues, alpha=0.3)
     for i in range(2):
@@ -89,5 +87,6 @@ def confusion_matrix(weight1, weight2, feature1_1, feature1_2, feature2_1, featu
     plt.ylabel("Actual")
     plt.xticks([0, 1], [species1, species2])
     plt.yticks([0, 1], [species1, species2])
+    plt.savefig('confusion_matrix.png')
     plt.show()
     
