@@ -7,7 +7,7 @@ from Visualization import *
 
 
 
-preVis()
+# preVis()
 feature1, feature2, species1, species2, learningRate, epochs, useBias = startGUI()
 # Feature1_1 is the feature1 of species1
 # Feature1_2 is the feature2 of species1
@@ -58,14 +58,15 @@ label2 = [-1.0] * 30
 visualize(feature1_1, feature1_2, feature2_1, feature2_2, 0, 0, 0, feature1,feature2, species1, species2)
 
 # train the model
-weight1, weight2, bias = train_model(feature1_1, feature1_2, feature2_1, feature2_2, label1, label2, learningRate,epochs,useBias)
+weight1, weight2, bias,errors = train_model(feature1_1, feature1_2, feature2_1, feature2_2, label1, label2, learningRate,epochs,useBias)
+
+print("MSE =", 0.5 * (sum(errors)/len(errors))**2)
 
 # Accuracy on training data
 print("Train Accuracy: ", test_model(weight1, weight2, feature1_1, feature1_2, feature2_1, feature2_2, label1, label2, bias) * 100, "%")
 
 # visualize the decision boundary
 visualize(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2, bias,feature1,feature2, species1, species2)
-
 # test the trained model
 print("Test Accuracy: ",test_model(weight1, weight2, test1_1, test1_2, test2_1, test2_2, label1, label2, bias) * 100, "%")
 # visualize the decision boundary

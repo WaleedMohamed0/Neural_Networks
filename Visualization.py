@@ -16,7 +16,6 @@ def visualize(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2, 
         plt.plot(x, y, color='black', label='Decision Boundary')
         
     plt.legend([species1, species2])
-    plt.savefig('decision_boundary.png')
     plt.show()
 
 # Define a Visualization function to visualize all the data points before train
@@ -59,6 +58,7 @@ def preVis():
             GentooFeature2 = []
             ChinstrapFeature1 = []
             ChinstrapFeature2 = []
+            plt.show()
 
 def confusion_matrix(weight1, weight2, feature1_1, feature1_2, feature2_1, feature2_2,species1, species2, bias):
     TP = 0
@@ -87,6 +87,5 @@ def confusion_matrix(weight1, weight2, feature1_1, feature1_2, feature2_1, featu
     plt.ylabel("Actual")
     plt.xticks([0, 1], [species1, species2])
     plt.yticks([0, 1], [species1, species2])
-    plt.savefig('confusion_matrix.png')
     plt.show()
     
