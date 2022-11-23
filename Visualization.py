@@ -89,3 +89,5 @@ def confusion_matrix(weight1, weight2, feature1_1, feature1_2, feature2_1, featu
     plt.yticks([0, 1], [species1, species2])
     plt.show()
     
+
+    
