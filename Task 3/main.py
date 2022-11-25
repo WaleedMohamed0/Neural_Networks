@@ -67,63 +67,85 @@ def tanh(x):
 def tanhDerivative(x):
     return 1 - np.tanh(x) ** 2
 
-# Train the model using backpropagation algorithm 
 def train():
-    global trainFeatures, trainLabels, testFeatures, testLabels, hiddenLayers, neuralsInHiddenLayer, activationFunction, learningRate, epochs, useBias
-    # Assigning the activation function
+    global activationFunction
     if activationFunction == "Sigmoid":
         activationFunction = sigmoid
         activationFunctionDerivative = sigmoidDerivative
     elif activationFunction == "Hyperbolic Tangent":
         activationFunction = tanh
         activationFunctionDerivative = tanhDerivative
-    
-    # Initializing the weights and biases
+        
+    # initializing the weights and biases
     weights = []
     biases = []
-    for i in range(hiddenLayers+1):
-        if i == 0:
-            weights.append(np.random.rand(neuralsInHiddenLayer,len(trainFeatures[0])))
-            biases.append(np.random.rand(neuralsInHiddenLayer))
-        elif i == hiddenLayers:
-            weights.append(np.random.rand(3,neuralsInHiddenLayer))
-            biases.append(np.random.rand(3))
-        else:
-            weights.append(np.random.rand(neuralsInHiddenLayer, neuralsInHiddenLayer))
-            biases.append(np.random.rand(neuralsInHiddenLayer))
-
-    # Training
-    for epoch in range(epochs):
-        # Forward propagation
-        layerOutput = []
-        for i in range(trainFeatures.shape[0]):
-            layerOutput.append([])
-            for j in range(hiddenLayers+1):
-                if j == 0:
-                    layerOutput[i].append(activationFunction(np.dot(weights[j], trainFeatures[i]) + biases[j]))
-                elif j == hiddenLayers:
-                    layerOutput[i].append(activationFunction(np.dot(weights[j], layerOutput[i][j-1]) + biases[j]))
+    layerOutput = []
+    
+    # initializing the weights and biases for the first hidden layer
+    weights.append(np.random.rand(neuralsInHiddenLayer, len(trainFeatures[0])))
+    biases.append(np.random.rand(neuralsInHiddenLayer, 1)) 
+    # initializing the weights and biases for the rest of the hidden layers
+    for i in range(hiddenLayers - 1):
+        weights.append(np.random.rand(neuralsInHiddenLayer, neuralsInHiddenLayer))
+        biases.append(np.random.rand(neuralsInHiddenLayer, 1))
+        
+    # initializing the weights and biases for the output layer
+    weights.append(np.random.rand(3, neuralsInHiddenLayer))
+    biases.append(np.random.rand(3, 1))
+    
+    for i in range(epochs):
+        # forward propagation
+        for j in range(len(trainFeatures)):
+            for k in range(hiddenLayers+1):
+                if k == 0:
+                    layerOutput.append(activationFunction(np.dot(weights[k], trainFeatures[j].reshape(len(trainFeatures[j]), 1)) + biases[k]))
                 else:
-                    layerOutput[i].append(activationFunction(np.dot(weights[j], layerOutput[i][j-1]) + biases[j]))
+                    layerOutput.append(activationFunction(np.dot(weights[k], layerOutput[k - 1]) + biases[k]))
                     
-        print(layerOutput)
-            # Backpropagation without updating the weights and biases
+            # backward propagation
+            # calculating the error for the output layer using the formula: error = (actual output - expected output) * derivative of activation function
+            errors = []
+            expectedOutput = np.zeros((3, 1))
+            for k in range(3):
+                if k == trainLabels[j]:
+                    expectedOutput[k] = 1
+                else:
+                    expectedOutput[k] = 0
+            errors.append((expectedOutput - layerOutput[-1]) * activationFunctionDerivative(layerOutput[-1]))
+            # calculating the error for the hidden layers using the formula: error = (weights of the next layer * error of the next layer) * derivative of activation function
+            for k in range(hiddenLayers):
+                errors.append(np.dot(weights[-k-1].T, errors[k]) * activationFunctionDerivative(layerOutput[-k-2]))
+            
+            # updating the weights and biases forward step using the formula: weight = weight + learning rate * error * output of the previous layer
+            for k in range(hiddenLayers+1):
+                weights[k] += learningRate * np.dot(errors[hiddenLayers-k].T, layerOutput[hiddenLayers-k-1])
+                biases[k] += learningRate * errors[hiddenLayers-k]
+            
+            layerOutput = []
+            
             
     return weights, biases
 
-weights, biases = train()
+weights, biases=train()
 
-def test():
-    global trainFeatures, trainLabels, testFeatures, testLabels, hiddenLayers, neuralsInHiddenLayer, activationFunction, learningRate, epochs, useBias
-    testAccuracy = 0
-    for i in range(testFeatures.shape[0]):
+def test(testFeatures, testLabels, weights, biases):
+    global activationFunction
+    if activationFunction == "Sigmoid":
+        activationFunction = sigmoid
+        activationFunctionDerivative = sigmoidDerivative
+    elif activationFunction == "Hyperbolic Tangent":
+        activationFunction = tanh
+        activationFunctionDerivative = tanhDerivative
+    correct = 0
+    for i in range(len(testFeatures)):
         for j in range(hiddenLayers+1):
             if j == 0:
-                layerOutput = activationFunction(np.dot(weights[j], testFeatures[i]) + biases[j])
+                layerOutput = activationFunction(np.dot(weights[j], testFeatures[i].reshape(len(testFeatures[i]), 1)) + biases[j])
             else:
                 layerOutput = activationFunction(np.dot(weights[j], layerOutput) + biases[j])
+        print(np.argmax(layerOutput))
+
         if np.argmax(layerOutput) == testLabels[i]:
-            testAccuracy += 1
-    testAccuracy /= testFeatures.shape[0]
-    print(testAccuracy)
-test()
+            correct += 1
+    return correct/len(testFeatures)
+print(test(testFeatures, testLabels, weights, biases))
