@@ -20,5 +20,5 @@ for i in data.columns:
     if i == 'species':
         continue
     data[i] = [float(j) for j in data[i]]
-    data[i] = ((data[i] - data[i].min()) / (data[i].max() - data[i].min()))
+    data[i] = ((data[i] ) / (data[i].max() ))
 
