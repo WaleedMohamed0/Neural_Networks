@@ -2,9 +2,8 @@ from tkinter import ttk
 from tkinter import *
 from preprocessing import *
 
-
 HiddenLayers = 1
-NeuralsInHiddenLayer = 5
+NeuralsInHiddenLayer = [5]
 LearningRate = 0.01
 Epochs = 100
 UseBias = False
@@ -13,7 +12,7 @@ ActivationFunction = "Sigmoid"
 
 def startGUI():
     def pickActivationFunction(e):
-            activationFunction.config(values = ["Sigmoid", "Hyperbolic Tangent"])
+        activationFunction.config(values=["Sigmoid", "Hyperbolic Tangent"])
 
     def callback():
         global LearningRate
@@ -28,7 +27,6 @@ def startGUI():
         NeuralsInHiddenLayer = neuralsInHiddenLayer.get()
         global ActivationFunction
         ActivationFunction = activationFunction.get()
-        
 
     def comboCreator(values, pady, bindFunc):
         feature1_combo = ttk.Combobox(master, values=values)
@@ -47,17 +45,16 @@ def startGUI():
         entry.pack(pady=5)
         return entry
 
-    
     master = Tk()
     master.title("Task 1")
     master.geometry("400x570")
 
     numOfHiddenLayersLabel = labelCreator("Number of hidden layers")
     hiddenLayers = entryCreator()
-    
+
     numOfNeuralsInHiddenLayerLabel = labelCreator("Number of neurals in hidden layer")
     neuralsInHiddenLayer = entryCreator()
-    
+
     activationFunctionLabel = labelCreator("Activation function")
     activationFunction = comboCreator(["Sigmoid", "Hyperbolic Tangent"], 5, pickActivationFunction)
 
@@ -78,4 +75,4 @@ def startGUI():
 
     mainloop()
 
-    return HiddenLayers, NeuralsInHiddenLayer,ActivationFunction , LearningRate, Epochs, UseBias
+    return HiddenLayers, NeuralsInHiddenLayer, ActivationFunction, LearningRate, Epochs, UseBias

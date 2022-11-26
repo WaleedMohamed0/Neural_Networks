@@ -6,10 +6,15 @@ import numpy as np
 hiddenLayers, neuralsInHiddenLayer, activationFunction, learningRate, epochs, useBias = startGUI()
 
 hiddenLayers = int(hiddenLayers) if hiddenLayers != "" else 1
-neuralsInHiddenLayer = int(neuralsInHiddenLayer) if neuralsInHiddenLayer != "" else 5
+neuralsInHiddenLayer = neuralsInHiddenLayer if neuralsInHiddenLayer != "" else [5]
 learningRate = float(learningRate) if learningRate != "" else 0.01
 epochs = int(epochs) if epochs != "" else 100
 useBias = bool(useBias) if useBias != "" else False
+
+if ',' in neuralsInHiddenLayer:
+    neuralsInHiddenLayer = neuralsInHiddenLayer.split(",")
+    neuralsInHiddenLayer = [int(i) for i in neuralsInHiddenLayer]
+print(neuralsInHiddenLayer)
 
 # Splitting the data into training and testing
 Adelie = data[data['species'] == 'Adelie']
@@ -93,18 +98,18 @@ def train():
     # initializing the weights and biases for the rest of the hidden layers
     for i in range(hiddenLayers):
         if i == 0:
-            weights.append(np.random.uniform(0,1,(neuralsInHiddenLayer, len(trainFeatures[0]))))
-            biases.append(np.random.uniform(0,1,(neuralsInHiddenLayer, 1)))
+            weights.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], len(trainFeatures[0]))))
+            biases.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], 1)))
         else:
-            weights.append(np.random.uniform(0,1,(neuralsInHiddenLayer, neuralsInHiddenLayer)))
-            biases.append(np.random.uniform(0,1,(neuralsInHiddenLayer, 1)))
+            weights.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], neuralsInHiddenLayer[i])))
+            biases.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], 1)))
 
     # initializing the weights and biases for the output layer
     if hiddenLayers == 0:
         weights.append(np.random.uniform(0,1,(3, 5)))
         biases.append(np.random.uniform(0,1,(3, 1)))
     else:
-        weights.append(np.random.uniform(0,1,(3, neuralsInHiddenLayer)))
+        weights.append(np.random.uniform(0,1,(3, neuralsInHiddenLayer[-1])))
         biases.append(np.random.uniform(0,1,(3, 1)))
 
     for i in range(epochs):
@@ -115,7 +120,6 @@ def train():
                 if k == 0:
                     layerOutput.append(activationFunction(np.dot(weights[k], trainFeatures[j].reshape(len(trainFeatures[j]), 1)) + biases[k]))
                 else:
-
                     layerOutput.append(activationFunction(np.dot(weights[k], layerOutput[k]) + biases[k]))
 
             # backward propagation
@@ -165,8 +169,6 @@ def test(testFeatures, testLabels, weights, biases):
                     np.dot(weights[j], testFeatures[i].reshape(len(testFeatures[i]), 1)) + biases[j])
             else:
                 layerOutput = activationFunction(np.dot(weights[j], layerOutput) + biases[j])
-        print(np.argmax(layerOutput))
-        print(testLabels[i])
 
         if np.argmax(layerOutput) == testLabels[i]:
             correct += 1
