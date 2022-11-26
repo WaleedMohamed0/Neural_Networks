@@ -14,16 +14,15 @@ useBias = bool(useBias) if useBias != "" else False
 if ',' in neuralsInHiddenLayer:
     neuralsInHiddenLayer = neuralsInHiddenLayer.split(",")
     neuralsInHiddenLayer = [int(i) for i in neuralsInHiddenLayer]
-print(neuralsInHiddenLayer)
+else:
+    neuralsInHiddenLayer = [int(neuralsInHiddenLayer)]
+
 
 # Splitting the data into training and testing
 Adelie = data[data['species'] == 'Adelie']
 Gentoo = data[data['species'] == 'Gentoo']
 Chinstrap = data[data['species'] == 'Chinstrap']
 
-# Adelie = Adelie.sample(frac = 1)
-# Gentoo = Gentoo.sample(frac = 1)
-# Chinstrap = Chinstrap.sample(frac = 1)
 
 AdelieTrain, AdelieTest = Adelie[:int(0.6 * len(Adelie))], Adelie[int(0.6 * len(Adelie)):]
 GentooTrain, GentooTest = Gentoo[:int(0.6 * len(Gentoo))], Gentoo[int(0.6 * len(Gentoo)):]
@@ -50,7 +49,7 @@ testFeatures = testFeatures.to_numpy()
 testLabels = testLabels.to_numpy()
 
 
-# Converting the labels into numirical values
+# Converting the labels into numerical values
 def convertLabels(labels):
     for i in range(len(labels)):
         if labels[i] == "Adelie":
@@ -81,6 +80,7 @@ def tanh(x):
 def tanhDerivative(x):
     return 1 - x ** 2
 
+
 def train():
     global activationFunction
     if activationFunction == "Sigmoid":
@@ -98,19 +98,23 @@ def train():
     # initializing the weights and biases for the rest of the hidden layers
     for i in range(hiddenLayers):
         if i == 0:
-            weights.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], len(trainFeatures[0]))))
-            biases.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], 1)))
+            weights.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], len(trainFeatures[0]))))
+            biases.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], 1)))
         else:
-            weights.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], neuralsInHiddenLayer[i])))
-            biases.append(np.random.uniform(0,1,(neuralsInHiddenLayer[i], 1)))
+            weights.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], neuralsInHiddenLayer[i - 1])))
+            biases.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], 1)))
 
     # initializing the weights and biases for the output layer
     if hiddenLayers == 0:
-        weights.append(np.random.uniform(0,1,(3, 5)))
-        biases.append(np.random.uniform(0,1,(3, 1)))
+        weights.append(np.random.uniform(0, 1, (3, 5)))
+        biases.append(np.random.uniform(0, 1, (3, 1)))
     else:
-        weights.append(np.random.uniform(0,1,(3, neuralsInHiddenLayer[-1])))
-        biases.append(np.random.uniform(0,1,(3, 1)))
+        weights.append(np.random.uniform(0, 1, (3, neuralsInHiddenLayer[-1])))
+        biases.append(np.random.uniform(0, 1, (3, 1)))
+
+    if not useBias:
+        for i in range(len(biases)):
+            biases[i] = np.zeros(biases[i].shape)
 
     for i in range(epochs):
         # forward propagation
@@ -118,7 +122,8 @@ def train():
             layerOutput.append(trainFeatures[j].reshape(len(trainFeatures[j]), 1))
             for k in range(hiddenLayers + 1):
                 if k == 0:
-                    layerOutput.append(activationFunction(np.dot(weights[k], trainFeatures[j].reshape(len(trainFeatures[j]), 1)) + biases[k]))
+                    layerOutput.append(activationFunction(
+                        np.dot(weights[k], trainFeatures[j].reshape(len(trainFeatures[j]), 1)) + biases[k]))
                 else:
                     layerOutput.append(activationFunction(np.dot(weights[k], layerOutput[k]) + biases[k]))
 
@@ -136,21 +141,30 @@ def train():
             for k in range(hiddenLayers):
                 errors.append(np.dot(weights[-k - 1].T, errors[k]) * activationFunctionDerivative(layerOutput[-k - 2]))
 
-
             # updating the weights and biases forward step using the formula: weight = weight + learning rate * error * output of the previous layer
             for k in range(hiddenLayers + 1):
-
-                weights[k] += learningRate * np.dot(errors[hiddenLayers - k],layerOutput[k].T) # 2 - 0 - 2
+                weights[k] += learningRate * np.dot(errors[hiddenLayers - k], layerOutput[k].T)  # 2 - 0 - 2
                 biases[k] += learningRate * errors[hiddenLayers - k]
-
             layerOutput = []
+    # train accuracy
+    correct = 0
+    for i in range(len(trainFeatures)):
+        for j in range(hiddenLayers + 1):
+            if j == 0:
+                layerOutput = activationFunction(
+                    np.dot(weights[j], trainFeatures[i].reshape(len(trainFeatures[i]), 1)) + biases[j])
+            else:
+                layerOutput = activationFunction(np.dot(weights[j], layerOutput) + biases[j])
 
-    return weights, biases
+        if np.argmax(layerOutput) == trainLabels[i]:
+            correct += 1
+
+    return weights, biases, correct / len(trainFeatures)
 
 
-weights, biases = train()
+weights, biases, trainAcc = train()
+print("Train Accuracy = ", trainAcc * 100, "%")
 
-print(weights)
 
 def test(testFeatures, testLabels, weights, biases):
     global activationFunction
@@ -175,4 +189,4 @@ def test(testFeatures, testLabels, weights, biases):
     return correct / len(testFeatures)
 
 
-print(test(testFeatures, testLabels, weights, biases))
+print("Test Accuracy = ", test(testFeatures, testLabels, weights, biases) * 100, "%")
