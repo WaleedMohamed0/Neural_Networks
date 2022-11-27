@@ -1,4 +1,3 @@
-from Train import train_model
 from preprocessing import *
 from GUI import startGUI
 import numpy as np
@@ -6,16 +5,10 @@ import numpy as np
 hiddenLayers, neuralsInHiddenLayer, activationFunction, learningRate, epochs, useBias = startGUI()
 
 hiddenLayers = int(hiddenLayers) if hiddenLayers != "" else 1
-neuralsInHiddenLayer = neuralsInHiddenLayer if neuralsInHiddenLayer != "" else [5]
+neuralsInHiddenLayer = list(map(int, neuralsInHiddenLayer)) if neuralsInHiddenLayer != "" else [5]
 learningRate = float(learningRate) if learningRate != "" else 0.01
 epochs = int(epochs) if epochs != "" else 100
 useBias = bool(useBias) if useBias != "" else False
-
-if ',' in neuralsInHiddenLayer:
-    neuralsInHiddenLayer = neuralsInHiddenLayer.split(",")
-    neuralsInHiddenLayer = [int(i) for i in neuralsInHiddenLayer]
-else:
-    neuralsInHiddenLayer = [int(neuralsInHiddenLayer)]
 
 
 # Splitting the data into training and testing
@@ -38,14 +31,14 @@ test = test.sample(frac=1)
 
 # Splitting the data into features and labels
 trainLabels = train['species']
-trainFeatures = train.drop(['species'], axis=1)
+trainSamples = train.drop(['species'], axis=1)
 testLabels = test['species']
-testFeatures = test.drop(['species'], axis=1)
+testSamples = test.drop(['species'], axis=1)
 
 # Converting the data into numpy arrays
-trainFeatures = trainFeatures.to_numpy()
+trainSamples = trainSamples.to_numpy()
 trainLabels = trainLabels.to_numpy()
-testFeatures = testFeatures.to_numpy()
+testSamples = testSamples.to_numpy()
 testLabels = testLabels.to_numpy()
 
 
@@ -98,7 +91,7 @@ def train():
     # initializing the weights and biases for the rest of the hidden layers
     for i in range(hiddenLayers):
         if i == 0:
-            weights.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], len(trainFeatures[0]))))
+            weights.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], len(trainSamples[0]))))
             biases.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], 1)))
         else:
             weights.append(np.random.uniform(0, 1, (neuralsInHiddenLayer[i], neuralsInHiddenLayer[i - 1])))
@@ -118,12 +111,12 @@ def train():
 
     for i in range(epochs):
         # forward propagation
-        for j in range(len(trainFeatures)):
-            layerOutput.append(trainFeatures[j].reshape(len(trainFeatures[j]), 1))
+        for j in range(len(trainSamples)):
+            layerOutput.append(trainSamples[j].reshape(len(trainSamples[j]), 1))
             for k in range(hiddenLayers + 1):
                 if k == 0:
                     layerOutput.append(activationFunction(
-                        np.dot(weights[k], trainFeatures[j].reshape(len(trainFeatures[j]), 1)) + biases[k]))
+                        np.dot(weights[k], trainSamples[j].reshape(len(trainSamples[j]), 1)) + biases[k]))
                 else:
                     layerOutput.append(activationFunction(np.dot(weights[k], layerOutput[k]) + biases[k]))
 
@@ -148,18 +141,18 @@ def train():
             layerOutput = []
     # train accuracy
     correct = 0
-    for i in range(len(trainFeatures)):
+    for i in range(len(trainSamples)):
         for j in range(hiddenLayers + 1):
             if j == 0:
                 layerOutput = activationFunction(
-                    np.dot(weights[j], trainFeatures[i].reshape(len(trainFeatures[i]), 1)) + biases[j])
+                    np.dot(weights[j], trainSamples[i].reshape(len(trainSamples[i]), 1)) + biases[j])
             else:
                 layerOutput = activationFunction(np.dot(weights[j], layerOutput) + biases[j])
 
         if np.argmax(layerOutput) == trainLabels[i]:
             correct += 1
 
-    return weights, biases, correct / len(trainFeatures)
+    return weights, biases, correct / len(trainSamples)
 
 
 weights, biases, trainAcc = train()
@@ -189,4 +182,4 @@ def test(testFeatures, testLabels, weights, biases):
     return correct / len(testFeatures)
 
 
-print("Test Accuracy = ", test(testFeatures, testLabels, weights, biases) * 100, "%")
+print("Test Accuracy = ", test(testSamples, testLabels, weights, biases) * 100, "%")
