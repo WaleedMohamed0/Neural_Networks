@@ -40,7 +40,7 @@ def startGUI():
             NeuralsInHiddenLayer = NeuralsInHiddenLayer.split(",")
             NeuralsInHiddenLayer = [int(i) for i in NeuralsInHiddenLayer]
 
-        if len(NeuralsInHiddenLayer) != int(HiddenLayers):
+        if len(NeuralsInHiddenLayer) != int(HiddenLayers) and (HiddenLayers != "0" and (NeuralsInHiddenLayer != "") or (NeuralsInHiddenLayer != "0")):
             messagebox.showerror("Error",
                                  "Number of hidden layers and number of neurons in hidden layers are not equal")
             return False
