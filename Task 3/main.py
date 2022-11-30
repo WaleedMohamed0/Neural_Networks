@@ -139,6 +139,8 @@ def train():
                 weights[k] += learningRate * np.dot(errors[hiddenLayers - k], layerOutput[k].T)  # 2 - 0 - 2
                 biases[k] += learningRate * errors[hiddenLayers - k]
             layerOutput = []
+            # q : if i have 3 nested lists, how to clear one of them without clearing the other two?
+            
     # train accuracy
     correct = 0
     for i in range(len(trainSamples)):
