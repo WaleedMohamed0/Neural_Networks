@@ -45,8 +45,7 @@ def train(hiddenLayers, neuralsInHiddenLayer, activationFunction, learningRate, 
             
             errors = backPropagation(weights, trainLabels[j], activationFunctionDerivative, hiddenLayers, layerOutput)
             
-            weights, biases = updateWeights(weights, biases, learningRate, errors, layerOutput, hiddenLayers)
-            
+            weights, biases = updateWeights(weights, biases, learningRate, errors, layerOutput, hiddenLayers, useBias)
     # train accuracy
     trainAccuracy = accuracy(weights, biases, trainSamples, trainLabels, activationFunction, hiddenLayers)
 
@@ -101,10 +100,11 @@ def backPropagation(weights, trainLabel, activationFunctionDerivative, hiddenLay
     return errors
 
 
-def updateWeights(weights, biases, learningRate, errors, layerOutput, hiddenLayers):
+def updateWeights(weights, biases, learningRate, errors, layerOutput, hiddenLayers, useBias):
     for k in range(hiddenLayers + 1):
         weights[k] += learningRate * np.dot(errors[hiddenLayers - k], layerOutput[k].T)  # 2 - 0 - 2
-        biases[k] += learningRate * errors[hiddenLayers - k]
+        if useBias:
+            biases[k] += learningRate * errors[hiddenLayers - k]
     return weights, biases
 
 
