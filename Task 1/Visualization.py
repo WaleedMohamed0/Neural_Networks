@@ -12,6 +12,9 @@ def visualize(feature1_1, feature1_2, feature2_1, feature2_2, weight1, weight2, 
         minX = [min(feature1_1), min(feature2_1)]
         maxX = [max(feature1_1), max(feature2_1)]
         x = [min(minX),max(maxX)]
+        # w1x + w2y + b = 0
+        # y = - (w1x + b) / w2
+        # (x1, y1) and (x2, y2) are the two points on the line
         y= [(-weight1 * i - bias) / weight2 for i in x]
         plt.plot(x, y, color='black', label='Decision Boundary')
         
@@ -88,6 +91,5 @@ def confusion_matrix(weight1, weight2, feature1_1, feature1_2, feature2_1, featu
     plt.ylabel("Actual")
     plt.xticks([0, 1], [species1, species2])
     plt.yticks([0, 1], [species1, species2])
-    plt.savefig('confusion_matrix.png')
     plt.show()
     

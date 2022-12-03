@@ -7,7 +7,7 @@ from Visualization import *
 
 
 
-preVis()
+# preVis()
 feature1, feature2, species1, species2, learningRate, epochs, useBias = startGUI()
 # Feature1_1 is the feature1 of species1
 # Feature1_2 is the feature2 of species1

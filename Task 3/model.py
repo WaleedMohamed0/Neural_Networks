@@ -76,6 +76,7 @@ def init(hiddenLayers, neuralsInHiddenLayer, trainSamples):
 def fowrardPropagation(weights, biases, trainSample, activationFunction, hiddenLayers):
     layerOutput = []
     layerOutput.append(trainSample.reshape(len(trainSample), 1))
+    # layerOutput = [5*1]
     for k in range(hiddenLayers + 1):
         if k == 0:
             layerOutput.append(activationFunction(

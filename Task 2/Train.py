@@ -21,9 +21,9 @@ def train_model(feature1_1, feature1_2, feature2_1, feature2_2, label1, label2, 
             net = calculate_net(weight1, weight2, bias, input_feature[i][0], input_feature[i][1])
             loss = input_feature[i][2] - net
             errors.append(loss)
-            
         visualizationList.append(0.5 * (sum([i ** 2 for i in errors]) / len(errors)))
         # If MSE is 0, stop training
+        # 1/2 * (sum(errors) ** 2 / len(errors))
         if 0.5 * (sum([i ** 2 for i in errors]) / len(errors)) <= minMSE:
             break
 
