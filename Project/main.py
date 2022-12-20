@@ -61,7 +61,18 @@ def inception_model():
     max_pool = Conv2D(10, (1, 1), activation='relu', padding='same')(max_pool)
 
     concatenation = tf.keras.layers.concatenate([conv1, conv2, max_pool], axis=3)
-    drop = Dropout(0.5)(concatenation)
+    conv3 = Conv2D(10, (1, 1), activation='relu', padding='same')(concatenation)
+    conv3 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv3)
+
+    conv4 = Conv2D(10, (1, 1), activation='relu', padding='same')(concatenation)
+    conv4 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv4)
+    conv4 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv4)
+
+    max_pool2 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(concatenation)
+    max_pool2 = Conv2D(10, (1, 1), activation='relu', padding='same')(max_pool2)
+    concatenation1 = tf.keras.layers.concatenate([conv3, conv4, max_pool2], axis=3)
+
+    drop = Dropout(0.5)(concatenation1)
     batch = BatchNormalization()(drop)
     flat = Flatten()(batch)
     dense = Dense(128, activation='relu')(flat)
@@ -70,13 +81,18 @@ def inception_model():
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.summary()
 
-    early_stopping = EarlyStopping(patience=5, verbose=1, monitor='val_loss', mode='min', restore_best_weights=True)
-    model.fit(X_train, y_train, epochs=10, validation_split=0.2, callbacks=[early_stopping])
+    if os.path.exists('sports.h5'):
+        model = tf.keras.models.load_model('sports.h5')
+    else:
+        early_stopping = EarlyStopping(patience=5, verbose=1, monitor='val_loss', mode='min', restore_best_weights=True)
+        history = model.fit(X_train, y_train, epochs=50, validation_split=0.2, callbacks=[early_stopping])
+        model.save('sports.h5')
     return model
 
 
-model = cnn_model()
-# model = inception_model()
+# model = cnn_model()
+model = inception_model()
+
 with open('submission_file.csv', 'w') as f:
     f.write('image_name,label\n')
     for i in os.listdir('Test'):

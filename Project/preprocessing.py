@@ -57,7 +57,5 @@ def augment_data(dir):
         data.append([np.array(cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)), create_label(path)])
         data.append([np.array(cv2.rotate(img, cv2.ROTATE_180)), create_label(path)])
     shuffle(data)
-    np.save('drive/My Drive/Colab Notebooks/train_data.npy', data)
+    #np.save('drive/My Drive/Colab Notebooks/train_data.npy', data)
     return data
-
-
