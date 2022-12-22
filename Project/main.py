@@ -48,29 +48,30 @@ def cnn_model():
 def inception_model():
     input_img = Input(shape=(IMG_SIZE, IMG_SIZE, 3))
     conv1 = Conv2D(10, (1, 1), activation='relu', padding='same')(input_img)
-    # In inception v1 should be 1x1 filter before 3x3 to reduce the number of math operations
-    conv1 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv1)
-
     conv2 = Conv2D(10, (1, 1), activation='relu', padding='same')(input_img)
+    # In inception v1 should be 1x1 filter before 3x3 to reduce the number of math operations
+    conv2 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv2)
+
+    conv3 = Conv2D(10, (1, 1), activation='relu', padding='same')(input_img)
     # In inception v1 should be 1x1 before 5x5
     # In inception v2 5x5 filter should be 3x3 twice
-    conv2 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv2)
-    conv2 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv2)
+    conv3 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv3)
+    conv3 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv3)
 
     max_pool = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(input_img)
     max_pool = Conv2D(10, (1, 1), activation='relu', padding='same')(max_pool)
 
-    concatenation = tf.keras.layers.concatenate([conv1, conv2, max_pool], axis=3)
-    conv3 = Conv2D(10, (1, 1), activation='relu', padding='same')(concatenation)
-    conv3 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv3)
-
+    concatenation = tf.keras.layers.concatenate([conv1,conv2, conv3, max_pool], axis=-1)
     conv4 = Conv2D(10, (1, 1), activation='relu', padding='same')(concatenation)
     conv4 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv4)
-    conv4 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv4)
+
+    conv5 = Conv2D(10, (1, 1), activation='relu', padding='same')(concatenation)
+    conv5 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv5)
+    conv5 = Conv2D(10, (3, 3), activation='relu', padding='same')(conv5)
 
     max_pool2 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(concatenation)
     max_pool2 = Conv2D(10, (1, 1), activation='relu', padding='same')(max_pool2)
-    concatenation1 = tf.keras.layers.concatenate([conv3, conv4, max_pool2], axis=3)
+    concatenation1 = tf.keras.layers.concatenate([conv4, conv5, max_pool2], axis=-1)
 
     drop = Dropout(0.5)(concatenation1)
     batch = BatchNormalization()(drop)
